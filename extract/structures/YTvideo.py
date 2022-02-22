@@ -13,7 +13,8 @@ class YTvideo:
             self.payload = payload
         if request:
             content_type, content_id = parse_request(request=request)
-            self.filename = "/" + "_".join(str(datetime.datetime.utcnow()).split()) + "_" + content_type + "_" + content_id
+            self.filename = "/" + "_".join(
+                str(datetime.datetime.utcnow()).split()) + "_" + content_type + "_" + content_id
 
         self.save_csv = os.path.join(base_dir, storage_csv)
         self.save_json = os.path.join(base_dir, storage_json)

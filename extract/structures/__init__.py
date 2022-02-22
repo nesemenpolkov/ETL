@@ -28,4 +28,3 @@ class IdTranslator(VideoAPI):
         for file in files:
             idx = re.search(acc_re, file).group().strip("@.")
             thread = threading.Thread(target=None)
-

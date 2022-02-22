@@ -48,7 +48,7 @@ class YTFrame:
 
     def to_json(self, sourceImportance=True):
         if self.type == "video":
-            #self.payload = pd.json_normalize(self.payload, max_level=1) <-- либо это либо через DF в явном виде!
+            # self.payload = pd.json_normalize(self.payload, max_level=1) <-- либо это либо через DF в явном виде!
             if not os.path.exists(self.save_json):
                 return False
             df = pd.DataFrame().from_dict(self.payload)
@@ -101,6 +101,7 @@ class YTFrame:
             with open(os.path.join(self.append_csv, filename), "a") as file:
                 data = csv.DictWriter(file, fieldnames=list(row.keys()), delimiter=",")
                 data.writerow(row)
+
 
 if __name__ == "__main__":
     data = {

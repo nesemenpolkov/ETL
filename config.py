@@ -15,13 +15,12 @@ import os
 #                       Data Base files!!!!
 #
 #
-#\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\////////////////////////////////////////////
-
-
+# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\////////////////////////////////////////////
 
 
 # YTFrame configs
-supported_types = [type(defaultdict(list)), type(defaultdict), type(list), type(dict), type(namedtuple), type(tuple), type(set), type({}), type(())]
+supported_types = [type(defaultdict(list)), type(defaultdict), type(list), type(dict), type(namedtuple), type(tuple),
+                   type(set), type({}), type(())]
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 
 storage_csv = "warhouse\\data-csv"

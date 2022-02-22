@@ -81,7 +81,7 @@ class VideoAPI:
         outputs["comments"] = response["statistics"]["commentCount"]
         print("Extracted!")
         return YTFrame(outputs, videoId)
-    
+
     def get_id(self, username):
         self.reset()
         if username:
@@ -90,7 +90,7 @@ class VideoAPI:
                 return channelId
         else:
             return None
-    
+
     def __get_channelName(self, username):
         params = {"part": "id",
                   "key": self.api_key,
@@ -110,13 +110,14 @@ class VideoAPI:
         else:
             return False
 
-    def scan_channel(self, channelId, period=48, interval=3600, scale=600):       #  TODO:add thread_name variable!
+    def scan_channel(self, channelId, period=48, interval=3600, scale=600):  # TODO:add thread_name variable!
         print("[INSIDE]Thread started, with PID:", os.getpid(), "at:", str(elapse_time()))
         if channelId:
             start_time = elapse_time()
             result = None
-            #print((elapse_time() - start_time) >= time_delta(hours=period))
-            while (elapse_time() - start_time) <= time_delta(hours=period):    #  while start_time + timedelta(hours=period) > elapse_time():
+            # print((elapse_time() - start_time) >= time_delta(hours=period))
+            while (elapse_time() - start_time) <= time_delta(
+                    hours=period):  # while start_time + timedelta(hours=period) > elapse_time():
                 try:
                     result = self.activities(channelId, isMonitor=True)
                     if result is not None:
@@ -145,7 +146,7 @@ class VideoAPI:
         if response:
             print("[RESPONSE-TYPE]", type(response.get("items")))
             print("[RESPONSE-CASE]", response.get("items") == [])
-            #nextPageToken = response.get("nextPageToken")
+            # nextPageToken = response.get("nextPageToken")
             if response["items"] != []:
                 for item in response["items"]:
                     if item["snippet"]["type"] == "upload":
@@ -164,12 +165,12 @@ class VideoAPI:
                 response = jsonyfier(from_url(ACTIVITY, params=params))
                 nextPageToken = response.get("nextPageToken")"""
 
-
     def collect_data(self, videoId=None, timeout=3600, period=48):
         if videoId:
             start = elapse_time()
 
-            while time_delta(hours=period) >= (elapse_time() - start):  #  while start_time + timedelta(hours=period) > elapse_time():
+            while time_delta(hours=period) >= (
+                    elapse_time() - start):  # while start_time + timedelta(hours=period) > elapse_time():
                 try:
                     self.__collectorman(videoId)
                 except:
@@ -202,15 +203,15 @@ class VideoAPI:
         if contentId:
             pass
 
-
     def reset(self):
         self.videos = defaultdict(list)
         self.params = channel(self.api_key)
 
+
 if __name__ == "__main__":
     yt = VideoAPI("AIzaSyD49bsFeWc_Nvx-r5wuPy7RkPuiCFQN46E")
-    #yt.activities("UC84J-P1AEat5jPz7C1vKhsw")
+    # yt.activities("UC84J-P1AEat5jPz7C1vKhsw")
     yt.from_video(videoId="wAd5GHi9e2I").to_csv()
-    #yt.get_channel_videos("UC84J-P1AEat5jPz7C1vKhsw").to_csv()
-    #channelId = yt.get_id("АлексейНавальный")
-    #print(channelId)
+    # yt.get_channel_videos("UC84J-P1AEat5jPz7C1vKhsw").to_csv()
+    # channelId = yt.get_id("АлексейНавальный")
+    # print(channelId)

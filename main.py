@@ -18,7 +18,6 @@ class Downloader(threading.Thread):
     def run(self):
         """Запуск потока"""
         while True:
-
             # Получаем url из очереди
             url = self.queue.get()
 

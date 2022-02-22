@@ -3,6 +3,7 @@ import pandas as pd
 import os, csv, datetime
 from common.utils import parse_request
 
+
 #  уже не актуален!!!
 class YTcomment:
     def __init__(self, payload, request=None):
@@ -49,6 +50,7 @@ class YTcomment:
                     string_r += str(self.reply[title][i])
                 string_r += "\n"
         return string_c + "\n" + string_r
+
 
 if __name__ == "__main__":
     yt = YTcomment

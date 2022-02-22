@@ -4,7 +4,7 @@ from extract.structures.YTFrame import YTFrame
 import threading
 from common.utils import elapse_time, time_delta
 
-    
+
 class Extractor:
     def __init__(self, service="youtube", api_key=None, ):
         self.API_KEY = api_key
@@ -67,8 +67,8 @@ class Extractor:
                 return False
 
     def get_comments(self, object_id=None,
-                   format="csv",
-                   filter=None):
+                     format="csv",
+                     filter=None):
         if not object_id and not self.settings["id"]:
             print("No source id, try again!")
             return False
@@ -94,7 +94,7 @@ class Extractor:
             except OSError as e:
                 print(e)
                 return False
-            
+
     def get_channel_id(self, channelName=None):
         if channelName:
             result = self.video.get_id(username=channelName)
@@ -106,7 +106,7 @@ class Extractor:
         if type(channels) != type([]):
             raise Exception(f"Wrong type. {type(channels)} is not supported!")
         self.settings.update({"id": channels})
-        self. channels = channels
+        self.channels = channels
 
     def monitor(self, channels=[], interval=600, duration=48, delta=3600, isInfinite=False):
         self.__init_channels_list(channels)
@@ -128,7 +128,8 @@ class Extractor:
         print("Scan procedure started at", str(elapse_time()))
         while channels != []:
             for ch in channels:
-                new_thread = threading.Thread(target=execs.scan_channel, args=(ch, self.settings["duration"], self.settings["timeDelta"], self.settings["timeInterval"]))
+                new_thread = threading.Thread(target=execs.scan_channel, args=(
+                    ch, self.settings["duration"], self.settings["timeDelta"], self.settings["timeInterval"]))
                 new_thread.setDaemon(True)
                 new_thread.start()
                 #  print(new_thread.getName(), "status:", new_thread.is_alive())
@@ -165,20 +166,21 @@ class Extractor:
         #  last thing in this method
         if isBackground:
             m_thread.join()
-            
+
     def get_activity(self, channelId, isMonitor=False):
         x = self.video.activities(channelId=channelId, isMonitor=isMonitor)
         print(x)
 
+
 if __name__ == "__main__":
     test = Extractor(service="youtube", api_key="AIzaSyD49bsFeWc_Nvx-r5wuPy7RkPuiCFQN46E")
     test_sample = ["UC84J-P1AEat5jPz7C1vKhsw", "UC_IEcnNeHc_bwd92Ber-lew", "UCKonxxVHzDl55V7a9n_Nlgg",
-                    "UCFU30dGHNhZ-hkh0R10LhLw", "UCsA_vkmuyIRlYYXeJueyIJQ", "UCdIEDjRlFiBdfQ0hqdSWHZw",
+                   "UCFU30dGHNhZ-hkh0R10LhLw", "UCsA_vkmuyIRlYYXeJueyIJQ", "UCdIEDjRlFiBdfQ0hqdSWHZw",
                    "UCQ4YOFsXjG9eXWZ6uLj2t2A", "Радіо Свобода Україна", "UCW5d-rpLATKOvBKs6heGuJw",
                    "SpastvRuchannel", "UC5azmFteRV-nj48bddT2z9w"]
-    #x = test.get_channel_id("ХВАТИТМОЛЧАТЬРОССИЯ")
-    #print(x)
-    #test.video_stat(object_id="UC84J-P1AEat5jPz7C1vKhsw")
+    # x = test.get_channel_id("ХВАТИТМОЛЧАТЬРОССИЯ")
+    # print(x)
+    # test.video_stat(object_id="UC84J-P1AEat5jPz7C1vKhsw")
     test.monitor(channels=test_sample, interval=300, duration=48)
     test.run()
     #  test.get_activity("UC84J-P1AEat5jPz7C1vKhsw", True)

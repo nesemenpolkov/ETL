@@ -31,7 +31,6 @@ class CommentAPI:
                 self.__load_stats(response["items"])
         return YTFrame(self.comments, self.replies, videoId)
 
-
     def __to_dict(self, comment=None, reply=None):
         if comment:
             self.comments["id"].append(comment["id"])
@@ -61,8 +60,8 @@ class CommentAPI:
         self.replies = defaultdict(list)
         self.params = channel(self.api_key)
 
+
 if __name__ == "__main__":
     yt = CommentAPI("AIzaSyD49bsFeWc_Nvx-r5wuPy7RkPuiCFQN46E")
     yt.get_video_comments("w8O6apM3aBw").to_csv()
-    #yt.get_video_comments("UCrrwDQIk4Qys3O9CvoGAYuQ").to_csv()
-
+    # yt.get_video_comments("UCrrwDQIk4Qys3O9CvoGAYuQ").to_csv()
