@@ -1,8 +1,12 @@
 from extract.youtube.youtube_comments import CommentAPI
 from extract.youtube.youtube_videos import VideoAPI
 from extract.structures.YTFrame import YTFrame
-import threading
+import threading, logging
 from common.utils import elapse_time, time_delta
+from config import logfile
+
+logging.basicConfig(filename=logfile, level=logging.DEBUG)
+log = logging.getLogger(__name__)
 
 
 class Extractor:
@@ -125,22 +129,29 @@ class Extractor:
         start_time = elapse_time()
         channels = self.channels
         execs = VideoAPI(self.settings["key"])
-        print("Scan procedure started at", str(elapse_time()))
+        # print("Scan procedure started at", str(elapse_time()))
+        s = str(elapse_time())
+        log.info("Scan procedure started at " + s)
         while channels != []:
             for ch in channels:
-                new_thread = threading.Thread(target=execs.scan_channel, args=(
-                    ch, self.settings["duration"], self.settings["timeDelta"], self.settings["timeInterval"]))
-                new_thread.setDaemon(True)
-                new_thread.start()
-                #  print(new_thread.getName(), "status:", new_thread.is_alive())
-                threads.append((new_thread, ch))
-                channels.remove(ch)
+                try:
+                    execs = VideoAPI(self.settings["key"])
+                    new_thread = threading.Thread(target=execs.scan_channel, args=(
+                        ch, self.settings["duration"], self.settings["timeDelta"], self.settings["timeInterval"]))
+                    new_thread.setDaemon(True)
+                    new_thread.start()
+                    #  print(new_thread.getName(), "status:", new_thread.is_alive())
+                    threads.append((new_thread, ch))
+                    channels.remove(ch)
+                except Exception as e:
+                    log.error(e)
         stime = elapse_time()
         while threads != []:
 
             for thread, _ in threads:
                 if not thread.is_alive():
                     if time_delta(hours=self.settings["duration"]) < elapse_time() - start_time:
+                        log.warning(thread.getName(), "is down!")
                         print(thread.getName(), "is down!")
                         threads.remove(thread)
                     else:
@@ -155,9 +166,13 @@ class Extractor:
     def run(self, isBackground=False):
 
         if isBackground:
-            m_thread = threading.Thread(target=self.__thread_maker)
-            m_thread.setDaemon(True)
-            m_thread.start()
+            try:
+                m_thread = threading.Thread(target=self.__thread_maker)
+                m_thread.setDaemon(True)
+                m_thread.start()
+                m_thread.join()
+            except Exception as e:
+                log.error(e)
         else:
             self.__thread_maker()
         #  ___________________________________
@@ -165,7 +180,8 @@ class Extractor:
         #  ___________________________________
         #  last thing in this method
         if isBackground:
-            m_thread.join()
+            # m_thread.join()
+            pass
 
     def get_activity(self, channelId, isMonitor=False):
         x = self.video.activities(channelId=channelId, isMonitor=isMonitor)
@@ -181,6 +197,6 @@ if __name__ == "__main__":
     # x = test.get_channel_id("ХВАТИТМОЛЧАТЬРОССИЯ")
     # print(x)
     # test.video_stat(object_id="UC84J-P1AEat5jPz7C1vKhsw")
-    test.monitor(channels=test_sample, interval=300, duration=48)
+    test.monitor(channels=test_sample, interval=300, duration=48, delta=900)
     test.run()
     #  test.get_activity("UC84J-P1AEat5jPz7C1vKhsw", True)

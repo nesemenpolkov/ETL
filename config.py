@@ -23,9 +23,11 @@ supported_types = [type(defaultdict(list)), type(defaultdict), type(list), type(
                    type(set), type({}), type(())]
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 
-storage_csv = "warhouse\\data-csv"
-storage_json = "warhouse\\data-json"
-accumulator = "warhouse\\accumulator"
+storage_csv = os.path.join("warhouse", "data-csv")
+storage_json = os.path.join("warhouse", "data-json")
+accumulator = os.path.join("warhouse", "accumulator")
+
+logfile = os.path.join(base_dir, "log.txt")
 
 #  Timeparse configs        TODO: Make type format of types automatic
 default_format = "youtube"

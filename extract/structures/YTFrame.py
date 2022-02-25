@@ -1,12 +1,14 @@
-from config import supported_types, base_dir, storage_csv, storage_json, accumulator
+from config import supported_types, base_dir, storage_csv, storage_json, accumulator, logfile
 import pandas as pd
-import os, csv
+import os, csv, logging
 from datetime import datetime
 from collections import defaultdict
 
 
 class YTFrame:
     def __init__(self, *args):
+        logging.basicConfig(filename=logfile, level=logging.WARNING)
+        self.log = logging.getLogger(__name__)
         # for arg in range(len(args) - 1):
         # if arg not in supported_types:
         # raise Exception(f"Object with type {type(arg)} is unsupported in YTFrame!")
@@ -93,14 +95,23 @@ class YTFrame:
         if not filename.endswith(".csv"):
             filename = filename + ".csv"
         if not os.path.exists(os.path.join(self.append_csv, filename)):
-            with open(os.path.join(self.append_csv, filename), "w") as header:
-                head = csv.DictWriter(header, fieldnames=list(row.keys()), delimiter=",")
-                head.writeheader()
-                head.writerow(row)
+            try:
+                with open(os.path.join(self.append_csv, filename), "w") as header:
+                    head = csv.DictWriter(header, fieldnames=list(row.keys()), delimiter=",")
+                    head.writeheader()
+                    head.writerow(row)
+            except Exception as e:
+                print(e)
+                self.log.error(e)
+
         else:
-            with open(os.path.join(self.append_csv, filename), "a") as file:
-                data = csv.DictWriter(file, fieldnames=list(row.keys()), delimiter=",")
-                data.writerow(row)
+            try:
+                with open(os.path.join(self.append_csv, filename), "a") as file:
+                    data = csv.DictWriter(file, fieldnames=list(row.keys()), delimiter=",")
+                    data.writerow(row)
+            except Exception as e:
+                print(e)
+                self.log.error(e)
 
 
 if __name__ == "__main__":
