@@ -1,7 +1,11 @@
 import json
-import requests
+import requests, logging
 from datetime import datetime, timedelta
 from inspect import currentframe
+from config import logfile
+
+logging.basicConfig(filename=logfile, level=logging.INFO)
+log = logging.getLogger(__name__)
 
 
 def jsonyfier(response):
@@ -14,12 +18,15 @@ def from_url(url, params=None):
 
 def check_response(response=None):
     if response:
-        #  print(response)
+        # print(response)
         try:
             if "error" in response:
+                print(response)
+                log.info(str(elapse_time()), response)
                 raise Exception("Cannot execute the request!")
         except Exception as e:
             print(e)
+            log.info(str(elapse_time()), e)
             return False
         return response
 

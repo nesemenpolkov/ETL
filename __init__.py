@@ -1,12 +1,13 @@
 from extract import Extractor
-import os, logging
+import os
+import logging
 from config import logfile
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, filename=logfile)
     log = logging.getLogger(__name__)
     try:
-        test = Extractor(service="youtube", api_key="AIzaSyD49bsFeWc_Nvx-r5wuPy7RkPuiCFQN46E")
+        test = Extractor(service="youtube", api_key="AIzaSyBNzgGm3NTIPH4P1hyZXW7qsB84_xDQKI0")
         test_sample = ["UC84J-P1AEat5jPz7C1vKhsw", "UC_IEcnNeHc_bwd92Ber-lew", "UCKonxxVHzDl55V7a9n_Nlgg",
                        "UCFU30dGHNhZ-hkh0R10LhLw", "UCsA_vkmuyIRlYYXeJueyIJQ", "UCdIEDjRlFiBdfQ0hqdSWHZw",
                        "UCQ4YOFsXjG9eXWZ6uLj2t2A", "UC7qnYpVcuFbURi3E2E6_f6Q", "UCW5d-rpLATKOvBKs6heGuJw",
@@ -28,3 +29,6 @@ if __name__ == "__main__":
         else:
             with open("exceptions.txt", "a") as f:
                 f.write(e)
+
+        # reserve key AIzaSyBNzgGm3NTIPH4P1hyZXW7qsB84_xDQKI0
+        # main key AIzaSyD49bsFeWc_Nvx-r5wuPy7RkPuiCFQN46E

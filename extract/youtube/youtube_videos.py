@@ -14,9 +14,6 @@ class VideoAPI:
         self.params = channel(API_KEY)
         logging.basicConfig(filename=logfile, level=logging.DEBUG)
         self.log = logging.getLogger(__name__)
-        self.views = 0
-        self.likes = 0
-        self.comments = 0
 
     #  extracts all videos and its data from a channel TODO: интеграция в multiprocessing!
     def get_channel_videos(self, channelId, maxResults=10):
@@ -116,7 +113,7 @@ class VideoAPI:
         else:
             return False
 
-    def scan_channel(self, channelId, period=48, interval=3600, scale=600):  # TODO:add thread_name variable!
+    def scan_channel(self, channelId, period=48, interval=900, scale=600):  # TODO:add thread_name variable!
         print("[INSIDE]Thread started, with PID:", os.getpid(), "at:", str(elapse_time()))
         if channelId:
             start_time = elapse_time()
@@ -132,9 +129,12 @@ class VideoAPI:
                         print(f"[NOTICE-FROM-{os.getpid()}]New video found on {channelId} channel, with id: {result}.")
                         start_time = elapse_time()
                         try:
+                            print("----------------------------------------------------------------------")
                             new_thread = threading.Thread(target=self.collect_data, args=(result, interval, period))
                             new_thread.setDaemon(True)
                             new_thread.start()
+                            print(f"New Thread for video {result}, {new_thread.getName()}")
+                            self.log.info(f"New Thread for video {result}, {new_thread.getName()}")
                         except Exception as e:
                             self.log.error("cannot start thread!", e)
                 except Exception as e:
@@ -151,7 +151,7 @@ class VideoAPI:
         if channelId:
             params = activity(channelId, self.api_key)
             if isMonitor:
-                params.update({"publishedAfter": convert_time()})
+                params.update({"publishedAfter": convert_time(elapse_time() - time_delta(seconds=600))})
             try:
                 response = check_response(jsonyfier(from_url(ACTIVITY, params=params)))
             except Exception as e:
@@ -159,8 +159,9 @@ class VideoAPI:
                 time.sleep(300)
                 response = check_response(jsonyfier(from_url(ACTIVITY, params=params)))
         if response:
-            print("[RESPONSE-TYPE]", type(response.get("items")))
-            print("[RESPONSE-CASE]", response.get("items") == [])
+            # print("[RESPONSE-TYPE]", type(response.get("items")))
+            # print("[RESPONSE-CASE]", response.get("items") == [])
+
             # nextPageToken = response.get("nextPageToken")
             if response["items"] != []:
                 try:
@@ -168,6 +169,7 @@ class VideoAPI:
                         if item["snippet"]["type"] == "upload":
                             videoId = item["contentDetails"]["upload"]["videoId"]
                             print("[API-RESPONSE]", item)
+                            self.log.info(f"{elapse_time()}, got new video {videoId}")
                             return videoId
                 except Exception as e:
                     self.log.error(e)
@@ -192,10 +194,12 @@ class VideoAPI:
                 try:
                     self.__collectorman(videoId)
                 except Exception as e:
-                    time.sleep(300)
-                    self.log.error(e)
+                    time.sleep(900)
+                    self.log.error(str(elapse_time()), e)
                     self.__collectorman(videoId)
-                time.sleep(timeout)
+                print(timeout)
+                self.log.info(f"Time:{str(elapse_time())}, timeout: {timeout}.")
+                time.sleep(900)
         else:
             print("Bad videoId!")
 
@@ -204,31 +208,34 @@ class VideoAPI:
         store = {}
         try:
             response = check_response(jsonyfier(from_url(VIDEO_STATS, params=params)))
-        except:
+        except Exception as e:
             time.sleep(120)
+            self.log.error(str(elapse_time()), e)
             response = check_response(jsonyfier(from_url(VIDEO_STATS, params=params)))
+            self.log.info(str(elapse_time()), "response:", response)
         try:
             response = response["items"][0]
         except Exception as e:
-            self.log.error(e)
+            self.log.error(str(elapse_time()), e)
             pass
         print("[SOURCE-API]", response)
         try:
             store["extractedAt"] = elapse_time()
-            store["likes"] = int(response["statistics"]["likeCount"]) - self.likes
-            store["views"] = int(response["statistics"]["viewCount"]) - self.views
-            self.likes = response["statistics"]["likeCount"]
-            self.views = response["statistics"]["viewCount"]
+            store["views"] = response["statistics"]["viewCount"]
         except Exception as e:
-            self.log.error(e)
+            self.log.error(str(elapse_time()), e)
             store["extractedAt"] = elapse_time()
-            store["likes"] = None
             store["views"] = None
         try:
-            store["comments"] = int(response["statistics"]["commentCount"]) - self.comments
-            self.comments = response["statistics"]["commentCount"]
-        except:
+            store["likes"] = response["statistics"]["likeCount"]
+        except Exception as e:
+            self.log.error(str(elapse_time()), e)
+            store["likes"] = None
+        try:
+            store["comments"] = response["statistics"]["commentCount"]
+        except Exception as e:
             store["comments"] = None
+            self.log.error(str(elapse_time()), e)
         return YTFrame().add_to(row=store, filename="video@" + videoId)
 
     def search_name(self, contentId):
@@ -241,9 +248,11 @@ class VideoAPI:
 
 
 if __name__ == "__main__":
-    yt = VideoAPI("AIzaSyD49bsFeWc_Nvx-r5wuPy7RkPuiCFQN46E")
+    yt = VideoAPI("AIzaSyBNzgGm3NTIPH4P1hyZXW7qsB84_xDQKI0")
     # yt.activities("UC84J-P1AEat5jPz7C1vKhsw")
     # yt.from_video(videoId="wAd5GHi9e2I").to_csv()
     # yt.get_channel_videos("UC84J-P1AEat5jPz7C1vKhsw").to_csv()
     channelId = yt.get_id("ivarlamov")
     print(channelId)
+    # print(yt.activities("UC_IEcnNeHc_bwd92Ber-lew", isMonitor=True))
+    print(yt.activities("UCKonxxVHzDl55V7a9n_Nlgg", isMonitor=True))

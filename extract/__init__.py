@@ -2,7 +2,7 @@ from extract.youtube.youtube_comments import CommentAPI
 from extract.youtube.youtube_videos import VideoAPI
 from extract.structures.YTFrame import YTFrame
 import threading, logging
-from common.utils import elapse_time, time_delta
+from common.utils import elapse_time, time_delta, convert_time
 from config import logfile
 
 logging.basicConfig(filename=logfile, level=logging.DEBUG)
@@ -112,7 +112,7 @@ class Extractor:
         self.settings.update({"id": channels})
         self.channels = channels
 
-    def monitor(self, channels=[], interval=600, duration=48, delta=3600, isInfinite=False):
+    def monitor(self, channels=[], interval=600, duration=48, delta=900, isInfinite=False):
         self.__init_channels_list(channels)
         if isInfinite:
             duration = 9999999999999
