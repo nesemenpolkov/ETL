@@ -140,7 +140,7 @@ class VideoAPI:
         if channelId:
             params = activity(channelId, self.api_key)
             if isMonitor:
-                params.update({"publishedAfter": convert_time(elapse_time() - time_delta(seconds=600))})
+                params.update({"publishedAfter": convert_time(elapse_time() - time_delta(seconds=300))})
             try:
                 response = check_response(jsonyfier(from_url(ACTIVITY, params=params)))
             except Exception as e:
