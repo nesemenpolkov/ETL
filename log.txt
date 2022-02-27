@@ -1,1 +1,39 @@
-INFO:extract:Scan procedure started at 2022-02-26 17:52:04.616160
+INFO:extract:Scan procedure started at 2022-02-27 13:51:35.756871
+INFO:extract.youtube.youtube_videos:2022-02-27 13:51:36.918726, got new video CTD2ZZuHjtQ
+INFO:extract.youtube.youtube_videos:2022-02-27 13:51:36.935371, got new video AjEOBJ2OwZg
+INFO:extract.youtube.youtube_videos:[NOTICE-FROM-2052]New video found on UC_IEcnNeHc_bwd92Ber-lew channel, with id: CTD2ZZuHjtQ.
+INFO:extract.youtube.youtube_videos:[NOTICE-FROM-2052]New video found on UCsA_vkmuyIRlYYXeJueyIJQ channel, with id: AjEOBJ2OwZg.
+INFO:extract.youtube.youtube_videos:Time:2022-02-27 13:51:38.214613, timeout: 900. Next slice at: 2022-02-27 14:06:38.214613
+INFO:extract.youtube.youtube_videos:Time:2022-02-27 13:51:38.279043, timeout: 900. Next slice at: 2022-02-27 14:06:38.279043
+INFO:extract:Scan procedure started at 2022-02-27 13:56:02.706628
+INFO:extract:Scan procedure started at 2022-02-27 13:56:02.706628
+INFO:extract:Scan procedure started at 2022-02-27 13:56:10.123910
+INFO:extract:Scan procedure started at 2022-02-27 13:56:10.123910
+INFO:extract:Scan procedure started at 2022-02-27 13:56:25.873985
+INFO:extract:Scan procedure started at 2022-02-27 13:56:25.873985
+INFO:extract:Scan procedure started at 2022-02-27 13:57:12.465330
+INFO:extract.youtube.youtube_videos:2022-02-27 13:57:13.291846, got new video AjEOBJ2OwZg
+INFO:extract.youtube.youtube_videos:[NOTICE-FROM-11628]New video found on UCsA_vkmuyIRlYYXeJueyIJQ channel, with id: AjEOBJ2OwZg.
+INFO:extract.youtube.youtube_videos:2022-02-27 13:57:13.487685, got new video dkia1DUpOVs
+INFO:extract.youtube.youtube_videos:[NOTICE-FROM-11628]New video found on UC_IEcnNeHc_bwd92Ber-lew channel, with id: dkia1DUpOVs.
+INFO:extract.youtube.youtube_videos:Time:2022-02-27 13:57:14.594088, timeout: 900. Next slice at: 2022-02-27 14:12:14.594088
+INFO:extract.youtube.youtube_videos:Time:2022-02-27 13:57:14.670712, timeout: 900. Next slice at: 2022-02-27 14:12:14.670712
+INFO:extract:Scan procedure started at 2022-02-27 13:58:17.024552
+INFO:extract.youtube.youtube_videos:2022-02-27 13:58:17.823102, got new video AjEOBJ2OwZg
+INFO:extract.youtube.youtube_videos:[NOTICE-FROM-7552]New video found on UCsA_vkmuyIRlYYXeJueyIJQ channel, with id: AjEOBJ2OwZg.
+INFO:extract.youtube.youtube_videos:2022-02-27 13:58:17.999921, got new video dkia1DUpOVs
+INFO:extract.youtube.youtube_videos:[NOTICE-FROM-7552]New video found on UC_IEcnNeHc_bwd92Ber-lew channel, with id: dkia1DUpOVs.
+INFO:extract.youtube.youtube_videos:Time:2022-02-27 13:58:18.989839, timeout: 900. Next slice at: 2022-02-27 14:13:18.989839
+INFO:extract.youtube.youtube_videos:Time:2022-02-27 13:58:18.989839, timeout: 900. Next slice at: 2022-02-27 14:13:18.989839
+INFO:extract:Scan procedure started at 2022-02-27 13:59:37.003608
+INFO:extract.youtube.youtube_videos:2022-02-27 13:59:37.936326, got new video dkia1DUpOVs
+INFO:extract.youtube.youtube_videos:[NOTICE-FROM-1812]New video found on UC_IEcnNeHc_bwd92Ber-lew channel, with id: dkia1DUpOVs.
+INFO:extract.youtube.youtube_videos:Time:2022-02-27 13:59:38.959611, timeout: 900. Next slice at: 2022-02-27 14:14:38.959611
+INFO:extract:Scan procedure started at 2022-02-27 14:00:30.677237
+INFO:extract.youtube.youtube_videos:2022-02-27 14:00:31.475452, got new video weantetbifM
+INFO:extract.youtube.youtube_videos:[NOTICE-FROM-3076]New video found on UC_IEcnNeHc_bwd92Ber-lew channel, with id: weantetbifM.
+INFO:extract.youtube.youtube_videos:Time:2022-02-27 14:00:32.511722, timeout: 900. Next slice at: 2022-02-27 14:15:32.511722
+INFO:extract:Scan procedure started at 2022-02-27 14:02:22.081641
+INFO:extract.youtube.youtube_videos:2022-02-27 14:02:22.966328, got new video weantetbifM
+INFO:extract.youtube.youtube_videos:[NOTICE-FROM-15608]New video found on UC_IEcnNeHc_bwd92Ber-lew channel, with id: weantetbifM.
+INFO:extract.youtube.youtube_videos:Time:2022-02-27 14:02:24.136331, timeout: 900. Next slice at: 2022-02-27 14:17:24.136331

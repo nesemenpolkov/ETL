@@ -1,71 +1,34 @@
-# -*- coding: utf-8 -*-
-
+from extract import Extractor
 import os
-import threading
-import urllib.request
-from queue import Queue
-
-
-class Downloader(threading.Thread):
-    """Потоковый загрузчик файлов"""
-
-    def __init__(self, queue):
-        """Инициализация потока"""
-        print("new thread run")
-        threading.Thread.__init__(self)
-        self.queue = queue
-
-    def run(self):
-        """Запуск потока"""
-        while True:
-            # Получаем url из очереди
-            url = self.queue.get()
-
-            # Скачиваем файл
-            self.download_file(url)
-
-            # Отправляем сигнал о том, что задача завершена
-            self.queue.task_done()
-
-    def download_file(self, url):
-        """Скачиваем файл"""
-        handle = urllib.request.urlopen(url)
-        fname = os.path.basename(url)
-
-        with open(fname, "wb") as f:
-            while True:
-                chunk = handle.read(1024)
-                if not chunk:
-                    break
-                f.write(chunk)
-        print("downloaded")
-
-
-def main(urls):
-    """
-    Запускаем программу
-    """
-    queue = Queue()
-
-    # Запускаем потом и очередь
-    for i in range(5):
-        t = Downloader(queue)
-        t.setDaemon(True)
-        t.start()
-
-    # Даем очереди нужные нам ссылки для скачивания
-    for url in urls:
-        queue.put(url)
-
-    # Ждем завершения работы очереди
-    queue.join()
-
+import logging
+from config import logfile
 
 if __name__ == "__main__":
-    urls = ["http://www.irs.gov/pub/irs-pdf/f1040.pdf",
-            "http://www.irs.gov/pub/irs-pdf/f1040a.pdf",
-            "http://www.irs.gov/pub/irs-pdf/f1040ez.pdf",
-            "http://www.irs.gov/pub/irs-pdf/f1040es.pdf",
-            "http://www.irs.gov/pub/irs-pdf/f1040sb.pdf"]
+    logging.basicConfig(level=logging.INFO, filename=logfile)
+    log = logging.getLogger(__name__)
+    try:
+        test_sample2 = ["UC7qnYpVcuFbURi3E2E6_f6Q", "UCW5d-rpLATKOvBKs6heGuJw",
+                        "SpastvRuchannel", "UC5azmFteRV-nj48bddT2z9w", "UCAyoyj6QDZR4HU_kOLrPSsg",
+                        "UCBi2mrWuNuyYy4gbM6fU18Q", "UC101o-vQ2iOj9vr00JUlyKw", "UCz63ar5uANqYTKJIwnUQucw",
+                        "UCsAw3WynQJMm7tMy093y37A"]
+        # x = test.get_channel_id("ХВАТИТМОЛЧАТЬРОССИЯ")
+        # print(x)
+        # test.video_stat(object_id="UC84J-P1AEat5jPz7C1vKhsw")
+        test2 = Extractor(service="youtube", api_key="AIzaSyBYLNXQzFEll2JA065Ip9BZAQHXlEC7dgM")
+        test2.monitor(channels=test_sample2, interval=300, duration=48, delta=900)
+        test2.run(isBackground=True)
+        #  test.get_activity("UC84J-P1AEat5jPz7C1vKhsw", True)
+    except Exception as e:
+        log.exception(e)
+        print("[ERROR]:", e)
+        if not os.path.exists("exceptions.txt"):
+            with open("exceptions.txt", "w") as f:
+                f.write(e)
+        else:
+            with open("exceptions.txt", "a") as f:
+                f.write(e)
 
-    main(urls)
+        # reserve key AIzaSyBNzgGm3NTIPH4P1hyZXW7qsB84_xDQKI0
+        # main key AIzaSyD49bsFeWc_Nvx-r5wuPy7RkPuiCFQN46E
+        # reserve key 2 AIzaSyAGMaR0IEOVRVgvLkaTt6wtSiiv-IWhyic <-active
+        # reserve key 3 AIzaSyBYLNXQzFEll2JA065Ip9BZAQHXlEC7dgM <-active

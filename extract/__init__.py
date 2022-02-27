@@ -1,9 +1,10 @@
 from extract.youtube.youtube_comments import CommentAPI
 from extract.youtube.youtube_videos import VideoAPI
 from extract.structures.YTFrame import YTFrame
-import threading, logging
+import threading, logging, time
 from common.utils import elapse_time, time_delta, convert_time
 from config import logfile
+from random import randint
 
 logging.basicConfig(filename=logfile, level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -170,11 +171,17 @@ class Extractor:
                 m_thread = threading.Thread(target=self.__thread_maker)
                 m_thread.setDaemon(True)
                 m_thread.start()
+                print(f"!!!!!!-------------{m_thread.getName()}------------!!!!!")
+                time.sleep(randint(3, 5))
                 m_thread.join()
             except Exception as e:
                 log.error(e)
         else:
             self.__thread_maker()
+
+        while 1:
+            if m_thread.is_alive():
+                time.sleep(3600)
         #  ___________________________________
         #  place for additional code
         #  ___________________________________

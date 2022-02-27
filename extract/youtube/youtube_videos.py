@@ -127,20 +127,9 @@ class VideoAPI:
                         self.log.info(
                             f"[NOTICE-FROM-{os.getpid()}]New video found on {channelId} channel, with id: {result}.")
                         print(f"[NOTICE-FROM-{os.getpid()}]New video found on {channelId} channel, with id: {result}.")
-                        start_time = elapse_time()
-                        try:
-                            print("----------------------------------------------------------------------")
-                            new_thread = threading.Thread(target=self.collect_data, args=(result, interval, period))
-                            new_thread.setDaemon(True)
-                            new_thread.start()
-                            print(f"New Thread for video {result}, {new_thread.getName()}")
-                            self.log.info(f"New Thread for video {result}, {new_thread.getName()}")
-                        except Exception as e:
-                            self.log.error("cannot start thread!", e)
+                        break
                 except Exception as e:
                     self.log.warning(e)
-
-                time.sleep(scale)
             try:
                 self.collect_data(videoId=result, timeout=interval, period=period)
             except Exception as e:
@@ -185,7 +174,7 @@ class VideoAPI:
                 response = jsonyfier(from_url(ACTIVITY, params=params))
                 nextPageToken = response.get("nextPageToken")"""
 
-    def collect_data(self, videoId=None, timeout=3600, period=48):
+    def collect_data(self, videoId=None, timeout=900, period=48):
         if videoId:
             start = elapse_time()
 
@@ -194,12 +183,13 @@ class VideoAPI:
                 try:
                     self.__collectorman(videoId)
                 except Exception as e:
-                    time.sleep(900)
+                    time.sleep(timeout)
                     self.log.error(str(elapse_time()), e)
                     self.__collectorman(videoId)
                 print(timeout)
-                self.log.info(f"Time:{str(elapse_time())}, timeout: {timeout}.")
-                time.sleep(900)
+                self.log.info(
+                    f"Time:{str(elapse_time())}, timeout: {timeout}. Next slice at: {elapse_time() + time_delta(seconds=timeout)}")
+                time.sleep(timeout)
         else:
             print("Bad videoId!")
 
