@@ -171,8 +171,6 @@ class Extractor:
                 m_thread = threading.Thread(target=self.__thread_maker)
                 m_thread.setDaemon(True)
                 m_thread.start()
-                print(f"!!!!!!-------------{m_thread.getName()}------------!!!!!")
-                time.sleep(randint(3, 5))
                 m_thread.join()
             except Exception as e:
                 log.error(e)
