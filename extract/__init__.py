@@ -2,12 +2,30 @@ from extract.youtube.youtube_comments import CommentAPI
 from extract.youtube.youtube_videos import VideoAPI
 from extract.structures.YTFrame import YTFrame
 import threading, logging, time
-from common.utils import elapse_time, time_delta, convert_time
+from common.utils import elapse_time, time_delta, convert_time, check_response, jsonyfier, from_url
 from config import logfile
-from random import randint
+from bs4 import BeautifulSoup
+from common.templates import VIDEO_STATS
 
 logging.basicConfig(filename=logfile, level=logging.DEBUG)
 log = logging.getLogger(__name__)
+
+
+class Downloader(threading.Thread):
+    def __init__(self, name, id, object):  # queue -> of API keys
+        threading.Thread.__init__()
+        self.name = name
+        self.id = id
+        self.object = object
+        print(f"[DAEMON-INFO]:Thread {self.name} started at {elapse_time()} for {self.id}...")
+
+    def run(self):
+        stime = elapse_time()
+        while time_delta(hours=48) >= elapse_time() - stime:
+            self.object.collectorman(self.id)  # <-- VideoAPI method
+            print(
+                f"[DAEMON-INFO]:{str(elapse_time())} Extraction successfully complited on thread {self.name} for video {self.id}...")
+            time.sleep(3600)
 
 
 class Extractor:
@@ -26,7 +44,7 @@ class Extractor:
         }
 
     def settings(self, **kwargs):
-        for key in kwargs.key():
+        for key in kwargs.keys():
             if key not in ["key", "fileFormat", "mode", "id", "contentType"]:
                 return f"Invalid argument {key}!"
         self.settings.update(kwargs)
@@ -112,8 +130,13 @@ class Extractor:
             raise Exception(f"Wrong type. {type(channels)} is not supported!")
         self.settings.update({"id": channels})
         self.channels = channels
+        for i in range(len(self.channels)):
+            channel = self.channels[i]
+            stime = elapse_time()
+            self.channels[i] = (stime, channel)
+        print(f"[INFO]:{str(elapse_time)} Channels {len(self.channels)} initialized.....")
 
-    def monitor(self, channels=[], interval=600, duration=48, delta=900, isInfinite=False):
+    def monitor(self, channels=list(), interval=600, duration=48, delta=900, isInfinite=False):
         self.__init_channels_list(channels)
         if isInfinite:
             duration = 9999999999999
@@ -126,43 +149,21 @@ class Extractor:
         })
 
     def __thread_maker(self):
-        threads = []
-        start_time = elapse_time()
-        channels = self.channels
-        execs = VideoAPI(self.settings["key"])
-        # print("Scan procedure started at", str(elapse_time()))
-        s = str(elapse_time())
-        log.info("Scan procedure started at " + s)
-        while channels != []:
-            for ch in channels:
-                try:
-                    execs = VideoAPI(self.settings["key"])
-                    new_thread = threading.Thread(target=execs.scan_channel, args=(
-                        ch, self.settings["duration"], self.settings["timeDelta"], self.settings["timeInterval"]))
+        print(f"[INFO]:{str(elapse_time)} Scanning procedure started...")
+        count = 0
+        while 1:
+            for i in range(len(self.channels)):
+                video = VideoAPI(API_KEY=self.API_KEY).activities(channelId=self.channels[i][1], isMonitor=True)
+                if video:
+                    new_thread = Downloader(name=str(count), id=video)
                     new_thread.setDaemon(True)
                     new_thread.start()
-                    #  print(new_thread.getName(), "status:", new_thread.is_alive())
-                    threads.append((new_thread, ch))
-                    channels.remove(ch)
-                except Exception as e:
-                    log.error(e)
-        stime = elapse_time()
-        while threads != []:
-
-            for thread, _ in threads:
-                if not thread.is_alive():
-                    if time_delta(hours=self.settings["duration"]) < elapse_time() - start_time:
-                        log.warning(thread.getName(), "is down!")
-                        print(thread.getName(), "is down!")
-                        threads.remove(thread)
-                    else:
-                        thread.start()
-
-            if elapse_time() - stime > time_delta(seconds=self.settings["timeInterval"]):
-                print(elapse_time())
-                stime = elapse_time()
-                print("Next check at:", stime + time_delta(seconds=self.settings["timeInterval"]))
-        print(f"Monitoring is finished. Proceed time: {elapse_time() - start_time}.")
+                    stime = elapse_time()
+                    self.channels[i][0] = stime
+                    count += 1
+                else:
+                    print(f"Channel {self.channels[i][1]} is checked...")
+            time.sleep(self.settings["timeInterval"])
 
     def run(self, isBackground=False):
 
@@ -176,10 +177,6 @@ class Extractor:
                 log.error(e)
         else:
             self.__thread_maker()
-
-        while 1:
-            if m_thread.is_alive():
-                time.sleep(3600)
         #  ___________________________________
         #  place for additional code
         #  ___________________________________

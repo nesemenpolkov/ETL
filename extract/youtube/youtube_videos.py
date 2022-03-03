@@ -5,6 +5,10 @@ from common.utils import from_url, jsonyfier, check_response, elapse_time, conve
 from extract.structures.YTFrame import YTFrame
 import time, os, logging, threading
 from config import logfile
+from bs4 import BeautifulSoup
+
+
+# from selenium import webdriver
 
 
 class VideoAPI:
@@ -83,7 +87,7 @@ class VideoAPI:
         outputs["views"] = response["statistics"]["viewCount"]
         outputs["comments"] = response["statistics"]["commentCount"]
         print("Extracted!")
-        return YTFrame(outputs, videoId)
+        return YTFrame().add_to(row=outputs, filename="video@" + videoId)
 
     def get_id(self, username):
         self.reset()
@@ -193,7 +197,19 @@ class VideoAPI:
         else:
             print("Bad videoId!")
 
-    def __collectorman(self, videoId):
+    def parse_video(self, videoId):
+        response = from_url("https://www.youtube.com/watch", params={"v": videoId})
+        soup = BeautifulSoup(response.text, "lxml")
+        views = soup.findall("span", class_="")
+        likes = soup.findall("span", class_="")
+        comments = soup.findall("span", class_="")
+        data = dict()
+        data["views"] = views
+        data["likes"] = likes
+        data["comments"] = comments
+        YTFrame().add_to(row=data, filename="video@" + videoId)
+
+    def collectorman(self, videoId):
         params = video(videoId=videoId, API_KEY=self.api_key)
         store = {}
         try:

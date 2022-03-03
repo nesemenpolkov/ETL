@@ -1,1 +1,10 @@
 INFO:extract:Scan procedure started at 2022-02-27 18:11:48.542756
+ERROR:__main__:'str' object does not support item assignment
+Traceback (most recent call last):
+  File "C:\Users\kocmo\OneDrive\Рабочий стол\YouTube API-stable\ETL\__init__.py", line 20, in <module>
+    test.monitor(channels=test_sample, interval=300, duration=48, delta=900)
+  File "C:\Users\kocmo\OneDrive\Рабочий стол\YouTube API-stable\ETL\extract\__init__.py", line 149, in monitor
+    self.__init_channels_list(channels)
+  File "C:\Users\kocmo\OneDrive\Рабочий стол\YouTube API-stable\ETL\extract\__init__.py", line 145, in __init_channels_list
+    channel[i] = (stime, channel)
+TypeError: 'str' object does not support item assignment
